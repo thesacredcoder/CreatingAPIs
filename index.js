@@ -1,8 +1,24 @@
+const config = require("config");
+const helmet = require("helmet");
 const Joi = require("joi");
+const logger = require("./logger");
 const express = require("express");
 const app = express();
 
-app.use(express.json());
+app.use(express.json()); // This particular middleware populates the req.body property
+app.use(logger); // Calling the custom middleware function
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
+app.use(helmet());
+
+//Configuration
+console.log("Application Name: " + config.get("name"));
+console.log("Mail Server: " + config.get("mail.host"));
+// console.log("Mail Password: " + config.get("mail.password"));
+
+// process.env.NODE_ENV. this sets the environment of the app
+// by settng the NODE_ENV=production in the terminal, it sets the enviroment to production
+// app.get('env') === 'development also does the same as NODE_ENV under the  hood as used in coding to check foe conditions
 
 const courses = [
   { id: 1, name: "course1" },
