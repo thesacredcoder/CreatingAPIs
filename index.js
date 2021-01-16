@@ -24,7 +24,7 @@ app.get("/api/courses", (req, res) => {
 //Specific get request for courses using route params as id
 app.get("/api/courses/:id", (req, res) => {
   const course = courses.find((c) => c.id === parseInt(req.params.id));
-  if (!course) res.status(404).send("Course not found");
+  if (!course) return res.status(404).send("Course not found");
   res.send(course);
 });
 
@@ -50,7 +50,7 @@ app.post("/api/courses", (req, res) => {
 //UPDATION verb request
 app.put("/api/courses/:id", (req, res) => {
   const course = courses.find((c) => c.id === parseInt(req.params.id));
-  if (!course) res.status(404).send("Course not found");
+  if (!course) return res.status(404).send("Course not found");
 
   //Validate
   const { error } = validateCourse(req.body); // this is result.error but destructured
@@ -73,6 +73,16 @@ function validateCourse(course) {
 
   return schema.validate(course);
 }
+
+app.delete("/api/courses/:id", (req, res) => {
+  const course = courses.find((c) => c.id === parseInt(req.params.id));
+  if (!course) return res.status(404).send("Course not found");
+
+  const index = courses.indexOf(course);
+  courses.splice(index, 1);
+
+  res.send(course);
+});
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on PORT ${port}`));
